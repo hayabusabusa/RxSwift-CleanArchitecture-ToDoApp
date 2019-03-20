@@ -1,2 +1,2 @@
 # RxSwift-CleanArchitecture-ToDoApp
-RxSwift + CleanArchitecture todoApp
+RxSwift + CleanArchitecture ToDo App
