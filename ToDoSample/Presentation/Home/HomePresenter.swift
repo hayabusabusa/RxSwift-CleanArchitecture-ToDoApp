@@ -11,7 +11,8 @@ import RxSwift
 
 protocol HomePresenter: class {
     func loadToDo()
-    func saveToDo(id: Int, title: String)
+    func saveToDo(title: String)
+    func updateToDo(id: Int)
 }
 
 class HomePresenterImpl: HomePresenter {
@@ -38,11 +39,20 @@ class HomePresenterImpl: HomePresenter {
             .disposed(by: disposeBag)
     }
     
-    func saveToDo(id: Int, title: String) {
-        let entity = ToDoEntity(id: id, title: title, state: false)
-        useCase.saveToDo(entity: entity)
+    func saveToDo(title: String) {
+        useCase.saveToDo(title: title)
             .subscribe(onNext: { [weak self] _ in
                 self?.loadToDo()
+            }, onError: { error in
+                print(error)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func updateToDo(id: Int) {
+        useCase.updateToDo(id: id)
+            .subscribe(onNext: { _ in
+                // Not reload
             }, onError: { error in
                 print(error)
             })

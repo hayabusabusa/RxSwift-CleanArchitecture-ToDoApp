@@ -16,6 +16,8 @@ class ToDoEntity: Object {
     @objc dynamic var title: String = ""
     @objc dynamic var state: Bool = false
     
+    override static func primaryKey() -> String? { return "id" }
+    
     convenience init(id: Int, title: String, state: Bool) {
         self.init()
         self.id = id

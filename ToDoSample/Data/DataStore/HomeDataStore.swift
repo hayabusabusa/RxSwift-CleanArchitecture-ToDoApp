@@ -12,7 +12,8 @@ import RealmSwift
 
 protocol HomeDataStore {
     func getToDoEntity() -> Observable<[ToDoEntity]>
-    func saveToDoEntity(_ entity: ToDoEntity) -> Observable<Void>
+    func saveToDoEntity(_ title: String) -> Observable<Void>
+    func updateToDoEntity(_ id: Int) -> Observable<Void>
 }
 
 struct HomeDataStoreImpl: HomeDataStore {
@@ -23,6 +24,7 @@ struct HomeDataStoreImpl: HomeDataStore {
                 let realm = try Realm()
                 
                 let list = realm.objects(ToDoEntity.self)
+                    .sorted(byKeyPath: "id", ascending: true)
                     .reduce(into: [ToDoEntity]()) { (list, item) in
                         list.append(item)
                     }
@@ -37,13 +39,35 @@ struct HomeDataStoreImpl: HomeDataStore {
         }
     }
     
-    func saveToDoEntity(_ entity: ToDoEntity) -> Observable<Void> {
+    func saveToDoEntity(_ title: String) -> Observable<Void> {
+        return Observable.create { observer in
+            do {
+                let realm = try Realm()
+                let id = realm.objects(ToDoEntity.self).count
+                let entity = ToDoEntity(id: id, title: title, state: false)
+                
+                try realm.write {
+                    realm.add(entity)
+                }
+                
+                observer.onNext(())
+                observer.onCompleted()
+            } catch let error {
+                observer.onError(error)
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func updateToDoEntity(_ id: Int) -> Observable<Void> {
         return Observable.create { observer in
             do {
                 let realm = try Realm()
                 
+                let item = realm.object(ofType: ToDoEntity.self, forPrimaryKey: id)
                 try realm.write {
-                    realm.add(entity)
+                    item?.state = true
                 }
                 
                 observer.onNext(())

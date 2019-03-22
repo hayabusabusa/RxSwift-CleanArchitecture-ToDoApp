@@ -23,5 +23,6 @@ class HomeTableViewCell: UITableViewCell {
     
     func setupCell(_ model: ToDoViewModel) {
         titleLabel.text = model.title
+        checkMarkButton.setCheckState(model.state ? .checked : .unchecked)
     }
 }

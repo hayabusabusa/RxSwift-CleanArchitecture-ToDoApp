@@ -28,6 +28,7 @@ class HomeViewController: UIViewController, Storyboardable {
         
         // UI
         setupUI()
+        setupNavigationBar()
         setupTableView()
         
         presenter.loadToDo()
@@ -60,6 +61,11 @@ extension HomeViewController {
         self.view.addSubview(button)
     }
     
+    private func setupNavigationBar() {
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+        navigationItem.title = "TODO"
+    }
+    
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
@@ -78,7 +84,7 @@ extension HomeViewController {
                                         okTitle: "OK",
                                         cancelTitle: "Cancel",
                                         placeholder: "タイトル") { text in
-                                            self.presenter.saveToDo(id: self.todoList.count + 1, title: text)
+                                            self.presenter.saveToDo(title: text)
         }
     }
 }
@@ -91,16 +97,26 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80.0
+        return 65.0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTableViewCell") as! HomeTableViewCell
+        
         cell.setupCell(todoList[indexPath.row])
+        cell.checkMarkButton.stateChangedAcion = { state in
+            if state == .checked {
+                self.presenter.updateToDo(id: self.todoList[indexPath.row].id)
+                self.todoList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                self.tableView.reloadData()
+            }
+        }
+        
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Delete
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
 }

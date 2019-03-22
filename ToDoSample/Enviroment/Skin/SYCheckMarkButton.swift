@@ -193,11 +193,24 @@ class SYCheckMarkButton: UIButton {
     // @objc
     @objc private func touchUpInside(_ sender: SYCheckMarkButton) {
         if checkState == .unchecked {
-            checkState = .checked
             open()
         } else {
-            checkState = .unchecked
             close()
+        }
+    }
+    
+    // Public method
+    public func setCheckState(_ checkState: CheckState ) {
+        if checkState == .checked {
+            // Open
+            self.checkState = .checked
+            circleShape.transform = CATransform3DMakeScale(1.0, 1.0, 1.0)
+            imageShape.opacity = 1.0
+        } else {
+            // Close
+            self.checkState = .unchecked
+            circleShape.transform = CATransform3DMakeScale(0, 0, 1.0)
+            imageShape.opacity = 0
         }
     }
     
@@ -208,6 +221,7 @@ class SYCheckMarkButton: UIButton {
         
         CATransaction.setCompletionBlock {
             self.isEnabled = true
+            self.checkState = .checked
         }
         
         imageShape.add(openOpacity, forKey: "openOpacity")
@@ -222,6 +236,7 @@ class SYCheckMarkButton: UIButton {
         // Remove all animations
         CATransaction.setCompletionBlock {
             self.isEnabled = true
+            self.checkState = .unchecked
             self.imageShape.removeAllAnimations()
             self.circleShape.removeAllAnimations()
         }

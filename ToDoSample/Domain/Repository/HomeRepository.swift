@@ -11,7 +11,8 @@ import RxSwift
 
 protocol HomeRepository {
     func getToDoEntity() -> Observable<[ToDoEntity]>
-    func saveToDoEntity(_ entity: ToDoEntity) -> Observable<Void>
+    func saveToDoEntity(_ title: String) -> Observable<Void>
+    func updateToDoEntity(_ id: Int) -> Observable<Void>
 }
 
 struct HomeRepositoryImpl: HomeRepository {
@@ -26,7 +27,11 @@ struct HomeRepositoryImpl: HomeRepository {
         return dataStore.getToDoEntity()
     }
     
-    func saveToDoEntity(_ entity: ToDoEntity) -> Observable<Void> {
-        return dataStore.saveToDoEntity(entity)
+    func saveToDoEntity(_ title: String) -> Observable<Void> {
+        return dataStore.saveToDoEntity(title)
+    }
+    
+    func updateToDoEntity(_ id: Int) -> Observable<Void> {
+        return dataStore.updateToDoEntity(id)
     }
 }

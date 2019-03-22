@@ -11,7 +11,8 @@ import RxSwift
 
 protocol HomeUseCase {
     func getToDo() -> Observable<[ToDoViewModel]>
-    func saveToDo(entity: ToDoEntity) -> Observable<Void>
+    func saveToDo(title: String) -> Observable<Void>
+    func updateToDo(id: Int) -> Observable<Void> 
 }
 
 struct HomeUseCaseImpl: HomeUseCase {
@@ -26,13 +27,19 @@ struct HomeUseCaseImpl: HomeUseCase {
         return repository.getToDoEntity()
             .flatMap { list -> Observable<[ToDoViewModel]> in
                 let result = list.reduce(into: [ToDoViewModel]()) { (result, item) in
-                    result.append(ToDoViewModel(item))
+                    if !item.state {
+                        result.append(ToDoViewModel(item))
+                    }
                 }
                 return Observable.just(result)
             }
     }
     
-    func saveToDo(entity: ToDoEntity) -> Observable<Void> {
-        return repository.saveToDoEntity(entity)
+    func saveToDo(title: String) -> Observable<Void> {
+        return repository.saveToDoEntity(title)
+    }
+    
+    func updateToDo(id: Int) -> Observable<Void> {
+        return repository.updateToDoEntity(id)
     }
 }
