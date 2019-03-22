@@ -2,5 +2,6 @@
 RxSwift + CleanArchitecture ToDo App
 
 ## TODO  
-- [ ] 削除機能  
-- [ ] 削除アニメーションの実装
+- [x] 削除機能  
+- [x] 削除アニメーションの実装  
+- [ ] セルのリユース時ボタンのリセット
